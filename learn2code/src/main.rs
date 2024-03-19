@@ -1,7 +1,7 @@
 use std::env;
-mod utils;
-use crate::utils::gcd;
 use std::str::FromStr;
+
+use learn2code::gcd;
 
 fn main() {
     println!("Welcome to use");
