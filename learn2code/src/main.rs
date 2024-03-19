@@ -3,7 +3,11 @@ use std::str::FromStr;
 
 use learn2code::gcd;
 
-fn main() {
+mod webapp;
+use crate::webapp::webapp_main;
+
+#[actix_web::main]
+async fn main() {
     println!("Welcome to use");
 
     let args: Vec<String> = env::args().collect();
@@ -16,6 +20,7 @@ fn main() {
         "-h" | "--help" => print_help(),
         "-v" | "--version" => print_version(),
         "gcd" => gcd_cmd_handler(&args[2..]),
+        "web" => webapp_cmd_handler().await,
         _ => print_help(),
     }
 }
@@ -55,4 +60,8 @@ fn gcd_cmd_handler(args: &[String]) {
         ),
         d
     )
+}
+
+async fn webapp_cmd_handler() {
+    webapp_main().await;
 }
