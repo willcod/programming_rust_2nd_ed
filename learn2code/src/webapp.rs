@@ -1,7 +1,7 @@
 use actix_web::{web, App, HttpResponse, HttpServer};
 use serde::Deserialize;
 
-use learn2code::gcd;
+use learn2code::utils::gcd;
 
 pub async fn webapp_main() {
     let server = HttpServer::new(|| {

@@ -1,10 +1,15 @@
 use std::env;
 use std::str::FromStr;
 
-use learn2code::gcd;
+use learn2code::utils::gcd;
 
 mod webapp;
 use crate::webapp::webapp_main;
+
+use learn2code::mandelbrot::parse_complex;
+use learn2code::mandelbrot::parse_pair;
+use learn2code::mandelbrot::render;
+use learn2code::mandelbrot::write_image;
 
 #[actix_web::main]
 async fn main() {
@@ -21,6 +26,7 @@ async fn main() {
         "-v" | "--version" => print_version(),
         "gcd" => gcd_cmd_handler(&args[2..]),
         "web" => webapp_cmd_handler().await,
+        "mandelbrot" => mandelbrot_cmd_handler(&args[2..]),
         _ => print_help(),
     }
 }
@@ -64,4 +70,22 @@ fn gcd_cmd_handler(args: &[String]) {
 
 async fn webapp_cmd_handler() {
     webapp_main().await;
+}
+
+fn mandelbrot_cmd_handler(args: &[String]) {
+    if args.len() != 4 {
+        eprintln!("Usage: mandelbrot FILE PIXELS UPPERLEFT LOWERRIGHT");
+        eprintln!("Example: mandelbrot mandel.png 1000x750 -1.20,0.35 -1,0.20");
+        std::process::exit(1);
+    }
+
+    let bounds = parse_pair(&args[1], 'x').expect("error parsing image dimensions");
+    let upper_left = parse_complex(&args[2]).expect("error parsing upper left corner point");
+    let lower_right = parse_complex(&args[3]).expect("error parsing lower right corner point");
+
+    let mut pixels = vec![0; bounds.0 * bounds.1];
+
+    render(&mut pixels, bounds, upper_left, lower_right);
+
+    write_image(&args[0], &pixels, bounds).expect("error writing image");
 }

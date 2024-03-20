@@ -1,4 +1,4 @@
-use learn2code::gcd;
+use learn2code::utils::gcd;
 
 #[test]
 fn test_gcd() {
